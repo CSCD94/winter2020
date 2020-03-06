@@ -13,7 +13,11 @@ def get_random_btree(items: list):
     all insertions at leaf level;
     at each level, go right with prob 50% and left with prob 50%.'''
 
-    pass
+    random.shuffle(items)
+    node = None
+    for item in items:
+        node = random_insert(node, item)
+    return BTree(node)
 
 
 def random_insert(node, value):
@@ -23,7 +27,20 @@ def random_insert(node, value):
 
     # use random.random() to decide left or right
 
-    pass
+    if node is None:
+        return BTNode(value)
+    # Insert to the left is > 0.5
+    if random.random() > 0.5:
+        if node.left is None:
+            node.left = BTNode(value)
+        else:
+            random_insert(node.left, value)
+    else:
+        if node.right is None:
+            node.right = BTNode(value)
+        else:
+            random_insert(node.right, value)
+    return node
 
 
 def get_bst(items):
@@ -31,8 +48,10 @@ def get_bst(items):
     with an empty tree.
 
     '''
-
-    pass
+    bst = BST()
+    for item in items:
+        bst = bst.insert(item)
+    return bst
 
 
 def get_random_bst(num_nodes):
@@ -40,8 +59,12 @@ def get_random_bst(num_nodes):
     random order.'''
 
     # use random.shuffle() to randomize a list
-
-    pass
+    items = list(range(num_nodes))
+    random.shuffle(items)
+    bst = BST()
+    for item in items:
+        bst = bst.insert(item)
+    return bst
 
 
 def plot_heights_bsts(num_nodes, num_trees):
@@ -52,7 +75,13 @@ def plot_heights_bsts(num_nodes, num_trees):
 
     # use statistics.mean() to calculate the averages
 
-    pass
+    avg_height = []
+    for N in range(num_nodes):
+        height = []
+        for _ in range(num_trees):
+            height.append(get_random_bst(N).height())
+        avg_height.append(statistics.mean(height))
+    return avg_height
 
 
 def plot_heights_btrees(num_nodes, num_trees):
@@ -63,18 +92,28 @@ def plot_heights_btrees(num_nodes, num_trees):
 
     # use statistics.mean() to calculate the averages
 
-    pass
+    avg_height = []
+    for N in range(num_nodes):
+        height = []
+        for _ in range(num_trees):
+            height.append(get_random_btree(list(range(N))).height())
+        avg_height.append(statistics.mean(height))
+    return avg_height
 
 
 if __name__ == '__main__':
 
+    #print(get_random_bst(5))
+    #print(get_random_btree(list(range(5))))
+
     # Plot num_nodes vs average height of random BST with num_nodes nodes.
-    NUM_TREES = 50
-    MAX_NODES = 1000
+    # change to 50 & 1000 when confident
+    NUM_TREES = 10
+    MAX_NODES = 100
 
     XS = list(range(MAX_NODES))
 
-    '''
+
     YS1 = plot_heights_btrees(MAX_NODES, NUM_TREES)
     YS2 = plot_heights_bsts(MAX_NODES, NUM_TREES)
 
@@ -85,4 +124,4 @@ if __name__ == '__main__':
     plt.legend()
 
     plt.show()
-    '''
+
