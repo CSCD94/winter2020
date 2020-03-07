@@ -1,8 +1,8 @@
 '''Exercise 1: Implementing Binary Trees.'''
 
-# 1) Run PyLint on this file.
-# 2) Look up str.format and use it here.
-# 3) Avoid using \. Use parentheses for grouping instead.
+# ANYA:
+# Remove unnecessary parentheses.
+# Good work!
 
 
 class BTree:
@@ -131,6 +131,7 @@ def _postorder(node):
     a post-order traversal.
 
     '''
+
     if node is None:
         return []
     return _postorder(node.left) + _postorder(node.right) + [node.value]
@@ -138,17 +139,15 @@ def _postorder(node):
 
 def _str(node, offset=0):
     '''Return a str representation of a BTree rooted at node.'''
+
+    # ANYA: Do you need the second if?
     if node is None:
         return ''
     if node.left is None and node.right is None:
-        return "\n {} {} \n".format(offset*'\t', node.value)
-    # ANYA: notice that you don't need offset=offset+1 here
-    # you can just use offset + 1
+        return "\n {} {} \n".format(offset * '\t', node.value)
     return "{} \n {} {} \n {}".format(_str(node.right, offset + 1),
-                                      offset*'\t', node.value,
+                                      offset * '\t', node.value,
                                       _str(node.left, offset + 1))
-
-    # '\n\t\t7\n\n\t6\n\n5\n\n\t\t4\n\n\t3\n\n\t\t2\n\n\t\t\t1\n'
 
 
 def _is_bst(node):
