@@ -2,9 +2,9 @@
 
 from btree import BTree, BTNode
 
-
-# 1) Check the case of having an empty BST as input, for every function.
-# 2) Consider the following helpers:
+# ANYA:
+# 1) fix insert into an empty tree
+# 2) run Pylint on this file
 
 
 def _insert(node, new_node):
@@ -15,14 +15,13 @@ def _insert(node, new_node):
 
     if node is None:
         return BST(new_node)
-    # when node is not None
     if new_node < node:
-        if node.left is None:
+        if node.left is None:      # ANYA: Do you need this?
             node.left = new_node
         else:
             _insert(node.left, new_node)
     if new_node > node:
-        if node.right is None:
+        if node.right is None:     # ANYA: Do you need this?
             node.right = new_node
         else:
             _insert(node.right, new_node)
@@ -51,6 +50,7 @@ def _update_parent(node, parent, new_value):
         -- parent.right to new_value if node is the right child of parent
         TODO: (?) new_value should be a node (can be None)
     '''
+
     if parent > node:
         parent.left = new_value
     elif parent < node:
@@ -123,7 +123,6 @@ class BST(BTree):
 
         '''
 
-        # this one will take a bit longer :)
         # special case: empty tree
         if self._root is None:
             raise NoSuchValueException
@@ -163,6 +162,7 @@ def _find(node, value):
     such BTNode, raise a NoSuchValueException.
 
     '''
+
     if node is not None:
         if node.value == value:
             return node
