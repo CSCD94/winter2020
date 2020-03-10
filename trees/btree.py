@@ -218,15 +218,3 @@ if __name__ == '__main__':
     print(BT.fringe())
     print(BT.height())
     print(BT2)
-
-    """
-    BT3 = BTree(BTNode(2, BTNode(3), None))
-    print(BT3)
-    print(BT3.is_bst())
-
-    BT4 = BTree(BTNode(3,
-                              BTNode(2, BTNode(3), None),
-                              BTNode(4)))
-    print(BT4)
-    print(BT4.is_bst())
-    """
