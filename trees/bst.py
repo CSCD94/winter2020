@@ -136,7 +136,9 @@ class BST(BTree):
 
 
 class NoSuchValueException(Exception):
-    pass
+    '''
+    raise when value is missing in a bst
+    '''
 
 
 def _find(node, value):
