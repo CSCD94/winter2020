@@ -11,10 +11,10 @@ def _insert(node, new_node):
     '''Return the BST that results from inserting new_node into the BST
     rooted at node. Do not insert duplicates.
 
+    (?) prerequisite: node is not None
+    How can I make this simpler?
     '''
 
-    if node is None:
-        return BST(new_node)
     if new_node < node:
         if node.left is None:      # ANYA: Do you need this?
             node.left = new_node
@@ -69,9 +69,9 @@ def _delete_node(node, parent):
         _update_parent(node, parent, node.left)
     # Need to delete the min node and update parent
     else:
-        min = _get_min(node.right)
-        substitute = BTNode(min)
-        _delete(node, min, parent)
+        min_value = _get_min(node.right)
+        substitute = BTNode(min_value)
+        _delete(node, min_value, parent)
         substitute.left = node.left
         substitute.right = node.right
         _update_parent(node, parent, substitute)
@@ -80,15 +80,10 @@ def _delete_node(node, parent):
 def _get_min(node):
     '''Return the minimum value of a subtree rooted at node.'''
     # Note that this returns the value stored in the node, not the node itself.
-    """
-     if node is None:
-        # TODO: return ? for None
-        return
-    """
+
     if node.left is None:
         return node.value
-    else:
-        return _get_min(node.left)
+    return _get_min(node.left)
 
 
 class BST(BTree):
@@ -99,6 +94,9 @@ class BST(BTree):
         duplicates.
 
         '''
+        if self._root is None:
+            self._root = BTNode(value)
+            return self
         return _insert(self._root, BTNode(value))
 
     def find(self, value):
@@ -136,22 +134,6 @@ class BST(BTree):
         else:
             _delete(self._root, value, None)
 
-        # Still don't understand why case 1 doesn't work
-        """
-        node = self.find(value)
-        if node.left is None and node.right is None:
-            node = None
-        # to delete has no right child
-        elif node.right is None:
-            node = node.left
-        # to delete has right child
-        else:
-            successor = find_min(node.right)
-            node.value = successor.value
-            node.right = successor.right
-            successor = None
-        """
-
 
 class NoSuchValueException(Exception):
     pass
@@ -166,9 +148,9 @@ def _find(node, value):
     if node is not None:
         if node.value == value:
             return node
-        elif node.left is not None and node.value > value:
+        if node.value > value:
             return _find(node.left, value)
-        elif node.right is not None and node.value < value:
+        if node.value < value:
             return _find(node.right, value)
 
     raise NoSuchValueException
@@ -182,9 +164,9 @@ def _depth(node, value):
     if node is not None:
         if node.value == value:
             return 1
-        elif node.left is not None and node.value > value:
+        if node.value > value:
             return 1 + _depth(node.left, value)
-        elif node.right is not None and node.value < value:
+        if node.value < value:
             return 1 + _depth(node.right, value)
 
     raise NoSuchValueException
@@ -205,6 +187,14 @@ if __name__ == '__main__':
     print(BT.size())
     print(BT.fringe())
     print(BT.height())
+
+    print(20*'=')
+
+    BT2 = BST()
+    for x in (0, 4.5, 10):
+        BT2.insert(x)
+        print(BT2)
+
 
     print(20*'=')
 
