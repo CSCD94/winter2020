@@ -8,24 +8,19 @@ from btree import BTree, BTNode
 
 
 def _insert(node, new_node):
-    '''Return the BST that results from inserting new_node into the BST
+    '''Return the node that results from inserting new_node into the BST
     rooted at node. Do not insert duplicates.
 
     (?) prerequisite: node is not None
     How can I make this simpler?
     '''
-
+    if node is None:
+        return new_node
     if new_node < node:
-        if node.left is None:      # ANYA: Do you need this?
-            node.left = new_node
-        else:
-            _insert(node.left, new_node)
+        node.left = _insert(node.left, new_node)
     if new_node > node:
-        if node.right is None:     # ANYA: Do you need this?
-            node.right = new_node
-        else:
-            _insert(node.right, new_node)
-    return BST(node)
+        node.right = _insert(node.right, new_node)
+    return node
 
 
 def _delete(node, value, parent):
@@ -48,7 +43,6 @@ def _update_parent(node, parent, new_value):
     '''Update the value of
         -- parent.left to new_value if node is the left child of parent
         -- parent.right to new_value if node is the right child of parent
-        TODO: (?) new_value should be a node (can be None)
     '''
 
     if parent > node:
