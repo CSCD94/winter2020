@@ -7,9 +7,6 @@ def _insert(node, new_node):
     '''Return the root of a BST that results from inserting new_node into
     the BST rooted at node. Do not insert duplicates.
 
-    (?) prerequisite: node is not None
-    How can I make this simpler?
-
     '''
     if node is None:
         return new_node
