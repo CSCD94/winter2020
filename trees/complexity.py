@@ -8,13 +8,11 @@ from bst import BST
 from btree import BTNode, BTree
 
 
-def get_random_btree(items: list):
+def get_random_btree(items):
     '''Return a BTree with elements from items inserted at random:
     all insertions at leaf level;
     at each level, go right with prob 50% and left with prob 50%.'''
 
-    # ANYA: no need to shuffle here, because the items are inserted at random
-    random.shuffle(items)
     node = None
     for item in items:
         node = random_insert(node, item)
@@ -22,7 +20,7 @@ def get_random_btree(items: list):
 
 
 def random_insert(node, value):
-    '''Return node with value insterted randomly into a subtree rooted at node;
+    '''Return root with value randomly inserted into a subtree rooted at node;
     insertion at leaf level;
     at each level, go right with prob 50% and left with prob 50%.'''
 
@@ -32,15 +30,9 @@ def random_insert(node, value):
         return BTNode(value)
     # Insert to the left is > 0.5
     if random.random() > 0.5:
-        if node.left is None:            # ANYA: do you need an if here?
-            node.left = BTNode(value)
-        else:
-            random_insert(node.left, value)
+        node.left = random_insert(node.left, value)
     else:
-        if node.right is None:          # ANYA: do you need an if here?
-            node.right = BTNode(value)
-        else:
-            random_insert(node.right, value)
+        node.right = random_insert(node.right, value)
     return node
 
 
@@ -51,7 +43,7 @@ def get_bst(items):
     '''
     bst = BST()
     for item in items:
-        bst = bst.insert(item)
+        bst.insert(item)
     return bst
 
 
@@ -62,10 +54,7 @@ def get_random_bst(num_nodes):
     # use random.shuffle() to randomize a list
     items = list(range(num_nodes))
     random.shuffle(items)
-    bst = BST()           # ANYA: we already have a function for this! :)
-    for item in items:
-        bst = bst.insert(item)
-    return bst
+    return get_bst(items)
 
 
 def plot_heights_bsts(num_nodes, num_trees):
@@ -105,8 +94,8 @@ if __name__ == '__main__':
 
     # Plot num_nodes vs average height of random BST with num_nodes nodes.
     # change to 50 & 1000 when confident
-    NUM_TREES = 50
-    MAX_NODES = 1000
+    NUM_TREES = 5
+    MAX_NODES = 100
 
 XS = list(range(MAX_NODES))
 
