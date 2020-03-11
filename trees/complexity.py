@@ -94,8 +94,8 @@ if __name__ == '__main__':
 
     # Plot num_nodes vs average height of random BST with num_nodes nodes.
     # change to 50 & 1000 when confident
-    NUM_TREES = 5
-    MAX_NODES = 100
+    NUM_TREES = 50
+    MAX_NODES = 1000
 
 XS = list(range(MAX_NODES))
 
