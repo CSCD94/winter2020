@@ -2,17 +2,14 @@
 
 from btree import BTree, BTNode
 
-# ANYA:
-# 1) fix insert into an empty tree
-# 2) run Pylint on this file
-
 
 def _insert(node, new_node):
-    '''Return the BST that results from inserting new_node into the BST
-    rooted at node. Do not insert duplicates.
+    '''Return the root of a BST that results from inserting new_node into
+    the BST rooted at node. Do not insert duplicates.
 
     (?) prerequisite: node is not None
     How can I make this simpler?
+
     '''
 
     if new_node < node:
@@ -25,7 +22,7 @@ def _insert(node, new_node):
             node.right = new_node
         else:
             _insert(node.right, new_node)
-    return BST(node)
+    return node
 
 
 def _delete(node, value, parent):
@@ -196,7 +193,6 @@ if __name__ == '__main__':
     for x in (0, 4.5, 10):
         BT2.insert(x)
         print(BT2)
-
 
     print(20*'=')
 
