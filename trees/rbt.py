@@ -17,12 +17,11 @@ class RedBlackTree(BST):
         '''
         if self._root is None:
             self._root = RBTNode(value, BLACK)
-            return self
         # when not inserting at a root
         new_node = RBTNode(value, RED)
         _insert_leaf(self._root, new_node)
+        # print (self)
         _rebalance(new_node)
-        return self
 
 
     # how is find and depth different from parent?
@@ -58,10 +57,11 @@ class RedBlackTree(BST):
 
 
 def _insert_leaf(node, new_node):
-    '''Insert new_node at leaf level in the tree rooted at node.
-    
-    (?) prerequisite: node is not None
+    '''Insert new_node at leaf level in the tree rooted at node; return root
     '''
+
+    if node is None:
+        return new_node
     if new_node < node:
         if node.left is None:
             node.left = new_node
@@ -74,18 +74,9 @@ def _insert_leaf(node, new_node):
             new_node.parent = node
         else:
             _insert_leaf(node.right, new_node)
-    return BST(node)
+    return node
 
-"""
-# newly-defined helper function
-def _recolouring(root, node):
-    '''Recolour the node to fix a newly coloured RBT'''
-    if not node == root:
-        node.parent.colour = BLACK
-        node.get_aunt().colour = BLACK
-        node.get_grandparent().colour = RED
-    _recolouring(node.get_grandparent())
-"""
+
 def _swap_colour(node1, node2):
     '''Swap the colour of node1 and node2'''
     node1_colour = node1.colour
@@ -97,42 +88,45 @@ def _rebalance(node):
     '''Fix the RedBlackTree root at newly inserted RBTNode node.'''
     # when parent is BLACK, we are done;
     # otherwise, need to fix the tree
-    if node == self._root:
-        self._root.colour = BLACK
+    if node.parent is None:
+        node.colour = BLACK
     else:
-        aunt = new_node.get_aunt()
-        grandparent = new_node.get_grandparent()
-        parent = new_node.parent
-        if parent.colour == RED:
-            # Case 1: the aunt of the new_node is RED
-            # use recolouring to fix the tree            
-            if aunt.colour == RED:
-                parent.colour = BLACK
-                aunt.colour = BLACK
-                grandparent.colour = RED            
-                _rebalance(grandparent)
-            # Case 2: the aunt of the new_node is BLACK
-            # use rotation to fix the tree
-            if aunt.colour == BLACK:
-                # left left case:
-                if grandparent.left == parent and parent.left == new_node:
-                    _rotate_right(grandparent)
-                    _swap_colour(parent, grandparent)
-                # left right case:
-                if grandparent.left == parent and parent.right == new_node:
-                    _rotate_left(parent)
-                    _rotate_right(grandparent)
-                    _swap_colour(parent, grandparent)                   
-                # right right case:
-                if grandparent.right == parent and parent.right == new_node:
-                    _rotate_left(grandparent)
-                    _swap_colour(parent, grandparent)
-                # right left case:
-                if grandparent.right == parent and parent.left == new_node:
-                    _rotate_right(parent)
-                    _rotate_left(grandparent)
-                    _swap_colour(parent, grandparent)
-    return self
+        aunt = node.get_aunt()
+        grandparent = node.get_grandparent()
+        parent = node.parent
+        if grandparent is not None:
+            if parent.colour == RED:
+                # Case 1: aunt is None or aunt of the new_node is BLACK
+                # use rotation to fix the tree
+                if aunt is None or aunt.colour == BLACK:
+                    # left left case:
+                    if node < parent < grandparent:
+                        _rotate_right(grandparent)
+                        # reports syntax error?
+                        # ((parent.colour, grandparent.colour)
+                        # = (grandparent.colour, parent.colour))
+                        node.parent.colour = BLACK
+                        node.get_sibling().colour = RED
+                    # left right case:
+                    if grandparent > parent and parent < node:
+                        _rotate_left(parent)
+                        _rebalance(node.left)
+                    # right right case:
+                    if grandparent < parent < node:
+                        _rotate_left(grandparent)
+                        node.parent.colour = BLACK
+                        node.get_sibling().colour = RED
+                    # right left case:
+                    if grandparent < parent and parent > node:
+                        _rotate_right(parent)
+                        _rebalance(node.right)
+                # Case 2: the aunt of the new_node is RED
+                # use recolouring to fix the tree
+                else:
+                    parent.colour = BLACK
+                    aunt.colour = BLACK
+                    grandparent.colour = RED
+                    _rebalance(grandparent)
 
 
 def _rotate_left(node):
@@ -141,30 +135,40 @@ def _rotate_left(node):
     Precondition: node.right is not None
 
     '''
-    #g = node
-    #p = node.left
-    node.left.parent = node.parent
-    T3 = node.left.right
-    node.left.right = node
-    node.parent = node.left
-    node.left = T3
-    T3.parent = node
+    sibling = node.right.left
+    new_node = node.right.right
+    aunt = node.left
+    value = node.value
+    node.value = node.right.value
+    node.right = new_node
+    if new_node is not None:
+        new_node.parent = node
+    node.left = RBTNode(value, left=aunt, right=sibling)
+    if sibling is not None:
+        sibling.parent = node.left
+    if aunt is not None:
+        aunt.parent = node.left
 
 
 def _rotate_right(node):
     '''Rotate the tree rooted at RBTNode node right.
 
-    Precondition: node.right is not None
+    Precondition: node.left is not None
 
     '''
-    #g = node
-    #p = node.right
-    node.right.parent = node.parent
-    T3 = node.right.left
-    node.right.left = node
-    node.parent = node.right.left
-    node.right = T3
-    T3.parent = node
+    sibling = node.left.right
+    new_node = node.left.left
+    aunt = node.right
+    value = node.value
+    node.value = node.left.value
+    node.left = new_node
+    if new_node is not None:
+        new_node.parent = node
+    node.right = RBTNode(value, left=sibling, right=aunt)
+    if sibling is not None:
+        sibling.parent = node.right
+    if aunt is not None:
+        aunt.parent = node.right
 
 
 class RBTNode(BTNode):
@@ -242,9 +246,28 @@ if __name__ == '__main__':
     for x in (0, 4.5, 10, 11, 12, 15, 16, 17, 18, 19, 20):
         print('inserting ' + str(x))
         BT.insert(x)
+        '''
+        if x == 0:
+            print(five)
+            print(five.right)
+            print(five.right.right)
+            print(five.right.right.right) #11
+            print(five.right.right.left) #7
+            print(five.left)
+            print(five.left.right)
+            print(five.left.left)
+            print(five.left.left.right)
+            print(five.left.left.left)
+        '''
         print(BT)
 
     print(20*'=')
+
+    '''
+    for x in (0, 4.5, 10, 11, 12, 15, 16, 17, 18, 19, 20, 1, 2, 3, 4, 5, 6, 7):
+        print('Found {}.'.format(BT.find(x)))
+
+    '''
 
     for x in (0, 5, 7, 10, 15, 20):
         print('Found {}.'.format(BT.find(x)))
