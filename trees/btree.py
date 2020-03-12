@@ -143,8 +143,6 @@ def _str(node, offset=0):
     # ANYA: Do you need the second if?
     if node is None:
         return ''
-    if node.left is None and node.right is None:
-        return "\n {} {} \n".format(offset * '\t', node.value)
     return "{} \n {} {} \n {}".format(_str(node.right, offset + 1),
                                       offset * '\t', node.value,
                                       _str(node.left, offset + 1))
